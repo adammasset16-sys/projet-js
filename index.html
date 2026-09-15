@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon formulaire</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        #resultats {
+            margin-top: 25px;
+        }
+
+        .texte {
+            background-color: #eee;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Mon formulaire</h1>
+
+        <!-- Les 4 cases -->
+        <input type="text" id="case1" placeholder="Écris ton premier texte">
+
+        <input type="text" id="case2" placeholder="Écris ton deuxième texte">
+
+        <input type="text" id="case3" placeholder="Écris ton troisième texte">
+
+        <input type="text" id="case4" placeholder="Écris ton quatrième texte">
+
+        <!-- Bouton -->
+        <button onclick="afficherTextes()">
+            Afficher les textes
+        </button>
+
+        <!-- Les textes apparaissent ici -->
+        <div id="resultats"></div>
+
+    </div>
+
+    <script>
+        function afficherTextes() {
+
+            let texte1 = document.getElementById("case1").value;
+            let texte2 = document.getElementById("case2").value;
+            let texte3 = document.getElementById("case3").value;
+            let texte4 = document.getElementById("case4").value;
+
+            document.getElementById("resultats").innerHTML = `
+                <div class="texte">${texte1}</div>
+                <div class="texte">${texte2}</div>
+                <div class="texte">${texte3}</div>
+                <div class="texte">${texte4}</div>
+            `;
+        }
+    </script>
+
+</body>
+
+</html>
