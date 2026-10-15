@@ -4,59 +4,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mon formulaire</title>
+
+    <title>Gestionnaire d'animés</title>
 
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
+            background-color: #f1f3f6;
+            margin: 0;
             padding: 30px;
         }
 
         .container {
-            max-width: 600px;
+            max-width: 1400px;
             margin: auto;
-            background: white;
+            background-color: white;
             padding: 25px;
-            border-radius: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
+            margin-bottom: 25px;
         }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            box-sizing: border-box;
+        .formulaire {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input,
+        select {
+            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 14px;
         }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #333;
+        .bouton-ajouter {
+            background-color: #4caf50;
             color: white;
             border: none;
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .bouton-ajouter:hover {
+            background-color: #388e3c;
+        }
+
+        .recherche {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .tableau-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1100px;
+        }
+
+        th {
+            background-color: #222;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .modifier {
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            padding: 7px 10px;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        button:hover {
-            background-color: #555;
-        }
-
-        #resultats {
-            margin-top: 25px;
-        }
-
-        .texte {
-            background-color: #eee;
-            padding: 12px;
-            margin-bottom: 10px;
+        .supprimer {
+            background-color: #e53935;
+            color: white;
+            border: none;
+            padding: 7px 10px;
             border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modifier:hover {
+            background-color: #1976d2;
+        }
+
+        .supprimer:hover {
+            background-color: #c62828;
         }
     </style>
 </head>
@@ -65,42 +121,319 @@
 
     <div class="container">
 
-        <h1>Mon formulaire</h1>
+        <h1>🎬 Gestionnaire d'animés</h1>
 
-        <!-- Les 4 cases -->
-        <input type="text" id="case1" placeholder="Écris ton premier texte">
+        <div class="formulaire">
 
-        <input type="text" id="case2" placeholder="Écris ton deuxième texte">
+            <input type="text" id="nom" placeholder="Nom de l'animé">
 
-        <input type="text" id="case3" placeholder="Écris ton troisième texte">
+            <input type="date" id="dateSortie">
 
-        <input type="text" id="case4" placeholder="Écris ton quatrième texte">
+            <input type="text" id="editeur" placeholder="Maison d'édition">
 
-        <!-- Bouton -->
-        <button onclick="afficherTextes()">
-            Afficher les textes
-        </button>
+            <input type="text" id="studio" placeholder="Studio d'animation">
 
-        <!-- Les textes apparaissent ici -->
-        <div id="resultats"></div>
+            <input type="text" id="budget" placeholder="Budget">
+
+            <input type="number" id="episodes" placeholder="Nombre d'épisodes">
+
+            <input type="text" id="genre" placeholder="Genre">
+
+            <select id="statut">
+                <option value="">Statut</option>
+                <option value="En cours">En cours</option>
+                <option value="Terminé">Terminé</option>
+                <option value="À venir">À venir</option>
+            </select>
+
+            <button class="bouton-ajouter" onclick="ajouterAnime()">
+                Ajouter l'animé
+            </button>
+
+        </div>
+
+        <input class="recherche" type="text" id="recherche" placeholder="🔎 Rechercher un animé..."
+            onkeyup="rechercherAnime()">
+
+        <div class="tableau-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Nom</th>
+                        <th>Date de sortie</th>
+                        <th>Maison d'édition</th>
+                        <th>Studio</th>
+                        <th>Budget</th>
+                        <th>Épisodes</th>
+                        <th>Genre</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="tableau">
+
+                    <tr>
+                        <td>One Piece</td>
+                        <td>1999-10-20</td>
+                        <td>Shueisha</td>
+                        <td>Toei Animation</td>
+                        <td>Inconnu</td>
+                        <td>1100+</td>
+                        <td>Action / Aventure</td>
+                        <td>En cours</td>
+
+                        <td>
+                            <button class="modifier" onclick="modifierLigne(this)">
+                                Modifier
+                            </button>
+
+                            <button class="supprimer" onclick="supprimerLigne(this)">
+                                Supprimer
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Jujutsu Kaisen</td>
+                        <td>2020-10-03</td>
+                        <td>Shueisha</td>
+                        <td>MAPPA</td>
+                        <td>Inconnu</td>
+                        <td>47+</td>
+                        <td>Action / Fantastique</td>
+                        <td>En cours</td>
+
+                        <td>
+                            <button class="modifier" onclick="modifierLigne(this)">
+                                Modifier
+                            </button>
+
+                            <button class="supprimer" onclick="supprimerLigne(this)">
+                                Supprimer
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Attack on Titan</td>
+                        <td>2013-04-07</td>
+                        <td>Kodansha</td>
+                        <td>WIT Studio / MAPPA</td>
+                        <td>Inconnu</td>
+                        <td>89</td>
+                        <td>Action / Drame</td>
+                        <td>Terminé</td>
+
+                        <td>
+                            <button class="modifier" onclick="modifierLigne(this)">
+                                Modifier
+                            </button>
+
+                            <button class="supprimer" onclick="supprimerLigne(this)">
+                                Supprimer
+                            </button>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
 
     </div>
 
+
     <script>
-        function afficherTextes() {
 
-            let texte1 = document.getElementById("case1").value;
-            let texte2 = document.getElementById("case2").value;
-            let texte3 = document.getElementById("case3").value;
-            let texte4 = document.getElementById("case4").value;
+        const tableau = document.getElementById("tableau");
 
-            document.getElementById("resultats").innerHTML = `
-                <div class="texte">${texte1}</div>
-                <div class="texte">${texte2}</div>
-                <div class="texte">${texte3}</div>
-                <div class="texte">${texte4}</div>
+        const nom = document.getElementById("nom");
+        const dateSortie = document.getElementById("dateSortie");
+        const editeur = document.getElementById("editeur");
+        const studio = document.getElementById("studio");
+        const budget = document.getElementById("budget");
+        const episodes = document.getElementById("episodes");
+        const genre = document.getElementById("genre");
+        const statut = document.getElementById("statut");
+
+
+        function ajouterAnime() {
+
+            if (
+                nom.value === "" ||
+                dateSortie.value === "" ||
+                editeur.value === "" ||
+                studio.value === ""
+            ) {
+                alert("Remplis au minimum le nom, la date, l'éditeur et le studio.");
+                return;
+            }
+
+
+            const ligne = document.createElement("tr");
+
+
+            ligne.innerHTML = `
+                <td>${nom.value}</td>
+
+                <td>${dateSortie.value}</td>
+
+                <td>${editeur.value}</td>
+
+                <td>${studio.value}</td>
+
+                <td>${budget.value}</td>
+
+                <td>${episodes.value}</td>
+
+                <td>${genre.value}</td>
+
+                <td>${statut.value}</td>
+
+                <td>
+                    <button class="modifier" onclick="modifierLigne(this)">
+                        Modifier
+                    </button>
+
+                    <button class="supprimer" onclick="supprimerLigne(this)">
+                        Supprimer
+                    </button>
+                </td>
             `;
+
+
+            tableau.appendChild(ligne);
+
+
+            nom.value = "";
+            dateSortie.value = "";
+            editeur.value = "";
+            studio.value = "";
+            budget.value = "";
+            episodes.value = "";
+            genre.value = "";
+            statut.value = "";
         }
+
+
+        function supprimerLigne(bouton) {
+
+            const ligne = bouton.parentElement.parentElement;
+
+            ligne.remove();
+        }
+
+
+        function modifierLigne(bouton) {
+
+            const ligne = bouton.parentElement.parentElement;
+
+            const cellules = ligne.querySelectorAll("td");
+
+
+            const nouveauNom = prompt(
+                "Nom de l'animé :",
+                cellules[0].textContent
+            );
+
+            const nouvelleDate = prompt(
+                "Date de sortie :",
+                cellules[1].textContent
+            );
+
+            const nouvelEditeur = prompt(
+                "Maison d'édition :",
+                cellules[2].textContent
+            );
+
+            const nouveauStudio = prompt(
+                "Studio d'animation :",
+                cellules[3].textContent
+            );
+
+            const nouveauBudget = prompt(
+                "Budget :",
+                cellules[4].textContent
+            );
+
+            const nouveauxEpisodes = prompt(
+                "Nombre d'épisodes :",
+                cellules[5].textContent
+            );
+
+            const nouveauGenre = prompt(
+                "Genre :",
+                cellules[6].textContent
+            );
+
+            const nouveauStatut = prompt(
+                "Statut :",
+                cellules[7].textContent
+            );
+
+
+            if (nouveauNom !== null) {
+                cellules[0].textContent = nouveauNom;
+            }
+
+            if (nouvelleDate !== null) {
+                cellules[1].textContent = nouvelleDate;
+            }
+
+            if (nouvelEditeur !== null) {
+                cellules[2].textContent = nouvelEditeur;
+            }
+
+            if (nouveauStudio !== null) {
+                cellules[3].textContent = nouveauStudio;
+            }
+
+            if (nouveauBudget !== null) {
+                cellules[4].textContent = nouveauBudget;
+            }
+
+            if (nouveauxEpisodes !== null) {
+                cellules[5].textContent = nouveauxEpisodes;
+            }
+
+            if (nouveauGenre !== null) {
+                cellules[6].textContent = nouveauGenre;
+            }
+
+            if (nouveauStatut !== null) {
+                cellules[7].textContent = nouveauStatut;
+            }
+        }
+
+
+        function rechercherAnime() {
+
+            const recherche = document
+                .getElementById("recherche")
+                .value
+                .toLowerCase();
+
+            const lignes = tableau.getElementsByTagName("tr");
+
+
+            for (const ligne of lignes) {
+
+                const texte = ligne.textContent.toLowerCase();
+
+                if (texte.includes(recherche)) {
+                    ligne.style.display = "";
+                } else {
+                    ligne.style.display = "none";
+                }
+            }
+        }
+
     </script>
 
 </body>
